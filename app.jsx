@@ -1,7 +1,8 @@
 import { jsxDEV } from "react/jsx-dev-runtime";
 const { useEffect, useMemo, useRef, useState } = React;
-const room = new WebsimSocket();
+const room = window.WebsimSocket ? new WebsimSocket() : null;
 function useRecords() {
+  if (!room) return [];
   const list = React.useSyncExternalStore(
     room.collection("file_v1").subscribe,
     room.collection("file_v1").getList
@@ -19,6 +20,10 @@ function Uploader({ onUploading }) {
   const [dragOver, setDragOver] = useState(false);
   const [queue, setQueue] = useState([]);
   async function handleFiles(fileList) {
+    if (!window.websim?.upload) {
+      alert("Upload API unavailable. Please run inside Websim.");
+      return;
+    }
     const files = Array.from(fileList);
     const items = files.map((f) => ({ id: crypto.randomUUID(), name: f.name, progress: 0, status: "queued", error: null, file: f }));
     setQueue((prev) => [...items, ...prev]);
@@ -78,29 +83,29 @@ function Uploader({ onUploading }) {
           /* @__PURE__ */ jsxDEV("p", { children: [
             /* @__PURE__ */ jsxDEV("strong", { children: "Drag & drop" }, void 0, false, {
               fileName: "<stdin>",
-              lineNumber: 85,
+              lineNumber: 90,
               columnNumber: 12
             }, this),
             " files here, or paste from clipboard"
           ] }, void 0, true, {
             fileName: "<stdin>",
-            lineNumber: 85,
+            lineNumber: 90,
             columnNumber: 9
           }, this),
           /* @__PURE__ */ jsxDEV("div", { className: "actions", children: [
             /* @__PURE__ */ jsxDEV("button", { className: "primary", onClick: () => inputRef.current?.click(), children: "Choose files" }, void 0, false, {
               fileName: "<stdin>",
-              lineNumber: 87,
+              lineNumber: 92,
               columnNumber: 11
             }, this),
             /* @__PURE__ */ jsxDEV("span", { className: "badge", children: "Paste supported" }, void 0, false, {
               fileName: "<stdin>",
-              lineNumber: 88,
+              lineNumber: 93,
               columnNumber: 11
             }, this)
           ] }, void 0, true, {
             fileName: "<stdin>",
-            lineNumber: 86,
+            lineNumber: 91,
             columnNumber: 9
           }, this),
           /* @__PURE__ */ jsxDEV(
@@ -119,7 +124,7 @@ function Uploader({ onUploading }) {
             false,
             {
               fileName: "<stdin>",
-              lineNumber: 90,
+              lineNumber: 95,
               columnNumber: 9
             },
             this
@@ -130,7 +135,7 @@ function Uploader({ onUploading }) {
       true,
       {
         fileName: "<stdin>",
-        lineNumber: 79,
+        lineNumber: 84,
         columnNumber: 7
       },
       this
@@ -139,45 +144,45 @@ function Uploader({ onUploading }) {
       /* @__PURE__ */ jsxDEV("div", { className: "file-row", children: [
         /* @__PURE__ */ jsxDEV("span", { className: "file-name", children: q.name }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 107,
+          lineNumber: 112,
           columnNumber: 17
         }, this),
         /* @__PURE__ */ jsxDEV("span", { className: "file-type", children: q.status }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 108,
+          lineNumber: 113,
           columnNumber: 17
         }, this)
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 106,
+        lineNumber: 111,
         columnNumber: 15
       }, this),
       /* @__PURE__ */ jsxDEV("div", { className: "progress", children: /* @__PURE__ */ jsxDEV("span", { style: { "--w": `${q.progress}%` } }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 110,
+        lineNumber: 115,
         columnNumber: 41
       }, this) }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 110,
+        lineNumber: 115,
         columnNumber: 15
       }, this),
       q.error && /* @__PURE__ */ jsxDEV("div", { style: { color: "#b91c1c", fontSize: 13 }, children: q.error }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 111,
+        lineNumber: 116,
         columnNumber: 27
       }, this)
     ] }, q.id, true, {
       fileName: "<stdin>",
-      lineNumber: 105,
+      lineNumber: 110,
       columnNumber: 13
     }, this)) }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 103,
+      lineNumber: 108,
       columnNumber: 9
     }, this)
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 78,
+    lineNumber: 83,
     columnNumber: 5
   }, this);
 }
@@ -205,7 +210,7 @@ function FileItem({ rec, currentUser }) {
       /* @__PURE__ */ jsxDEV("div", { className: "item-meta", children: [
         /* @__PURE__ */ jsxDEV("img", { className: "avatar", src: `https://images.websim.com/avatar/${rec.username}`, alt: rec.username }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 144,
+          lineNumber: 149,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV("span", { className: "name", children: [
@@ -213,79 +218,79 @@ function FileItem({ rec, currentUser }) {
           rec.username
         ] }, void 0, true, {
           fileName: "<stdin>",
-          lineNumber: 145,
+          lineNumber: 150,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV("span", { children: "\u2022" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 146,
+          lineNumber: 151,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV("span", { title: created.toISOString(), children: created.toLocaleString() }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 147,
+          lineNumber: 152,
           columnNumber: 11
         }, this)
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 143,
+        lineNumber: 148,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV("div", { className: "item-actions", children: [
         /* @__PURE__ */ jsxDEV("button", { onClick: () => window.open(rec.url, "_blank"), children: "Open" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 150,
+          lineNumber: 155,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV("button", { onClick: copyUrl, children: "Copy URL" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 151,
+          lineNumber: 156,
           columnNumber: 11
         }, this),
         me && /* @__PURE__ */ jsxDEV("button", { onClick: remove, children: "Delete" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 152,
+          lineNumber: 157,
           columnNumber: 18
         }, this)
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 149,
+        lineNumber: 154,
         columnNumber: 9
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 142,
+      lineNumber: 147,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "file-row", children: [
       /* @__PURE__ */ jsxDEV("span", { className: "file-name", children: rec.name }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 156,
+        lineNumber: 161,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV("span", { className: "file-type", children: rec.type || "unknown" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 157,
+        lineNumber: 162,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV("span", { className: "file-size", children: formatBytes(rec.size) }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 158,
+        lineNumber: 163,
         columnNumber: 9
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 155,
+      lineNumber: 160,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "url", title: rec.url, children: rec.url }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 160,
+      lineNumber: 165,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 141,
+    lineNumber: 146,
     columnNumber: 5
   }, this);
 }
@@ -294,51 +299,60 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [uploading, setUploading] = useState(false);
   useEffect(() => {
-    (async () => setCurrentUser(await window.websim.getCurrentUser()))();
+    (async () => {
+      if (window.websim?.getCurrentUser) {
+        setCurrentUser(await window.websim.getCurrentUser());
+      }
+    })();
   }, []);
   return /* @__PURE__ */ jsxDEV("div", { className: "container", children: [
     /* @__PURE__ */ jsxDEV("div", { className: "header", children: [
       /* @__PURE__ */ jsxDEV("div", { className: "title", children: "Websim File Uploader" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 177,
+        lineNumber: 186,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV("div", { className: "subtitle", children: "Upload files to get a shareable URL. Records are persisted." }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 178,
+        lineNumber: 187,
         columnNumber: 9
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 176,
+      lineNumber: 185,
       columnNumber: 7
+    }, this),
+    !room && /* @__PURE__ */ jsxDEV("div", { className: "empty", children: "Realtime database unavailable. This app must run inside Websim." }, void 0, false, {
+      fileName: "<stdin>",
+      lineNumber: 190,
+      columnNumber: 9
     }, this),
     /* @__PURE__ */ jsxDEV(Uploader, { onUploading: setUploading }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 181,
+      lineNumber: 193,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "list", children: records.length === 0 && !uploading ? /* @__PURE__ */ jsxDEV("div", { className: "empty", children: "No files yet. Upload above to create your first record." }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 185,
+      lineNumber: 197,
       columnNumber: 11
     }, this) : records.map((rec) => /* @__PURE__ */ jsxDEV(FileItem, { rec, currentUser }, rec.id, false, {
       fileName: "<stdin>",
-      lineNumber: 190,
+      lineNumber: 202,
       columnNumber: 13
     }, this)) }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 183,
+      lineNumber: 195,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 175,
+    lineNumber: 184,
     columnNumber: 5
   }, this);
 }
 ReactDOM.createRoot(document.getElementById("app")).render(/* @__PURE__ */ jsxDEV(App, {}, void 0, false, {
   fileName: "<stdin>",
-  lineNumber: 198,
+  lineNumber: 210,
   columnNumber: 60
 }));
